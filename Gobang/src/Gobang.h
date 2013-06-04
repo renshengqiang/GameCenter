@@ -1,8 +1,11 @@
 #ifndef _GOBANG_H
 #define _GOBANG_H
 
+#include "Define.h"
+#include "Nega_Scout.h"
 #include <QtGui>
-#define LINE_NUM 15
+
+
 class GobangWindow : public QWidget{
 	Q_OBJECT
     public:
@@ -33,8 +36,10 @@ class GobangWindow : public QWidget{
         int mStartPosX, mStartPosY, mMarginWidth, mContentWidth, mChessmanWidth;
         int mCurrentX, mCurrentY;
         QImage mBackgroundImage, mWhiteImage, mBlackImage;
-        int mValue[LINE_NUM][LINE_NUM], mWorthToComputer[LINE_NUM][LINE_NUM][4],mWorthToPlayer[LINE_NUM][LINE_NUM][4],mWorth[LINE_NUM][LINE_NUM];
-		QPushButton	*mpButton;
+        BYTE mValue[GRID_NUM][GRID_NUM];
+	int mWorthToComputer[GRID_NUM][GRID_NUM][4],mWorthToPlayer[GRID_NUM][GRID_NUM][4],mWorth[GRID_NUM][GRID_NUM];
+	QPushButton	*mpButton;
+	CNegaScout *m_pSE;
 };
 
 #endif

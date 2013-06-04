@@ -1,4 +1,6 @@
 #include "Gobang.h"
+#include "MoveGenerator.h"
+#include "Evaluation.h"
 #include <iostream>
 using namespace std;
 
@@ -15,22 +17,31 @@ GobangWindow::GobangWindow(int x, int y):
     mWhiteImage = QImage("./res/white.png"); /*mWorthToComputer*/
     mBlackImage = QImage("./res/black.png"); /*mWorthToPlayer*/
     
-    for(int i = 0; i < LINE_NUM; ++i)
-        for(int j = 0; j < LINE_NUM; ++j)
-            mValue[i][j]=0;/*mWorthToComputer 1, mWorthToPlayer 2*/
-    mCurrentX = LINE_NUM/2; mCurrentY = LINE_NUM/2;
+    for(int i = 0; i < GRID_NUM; ++i)
+        for(int j = 0; j < GRID_NUM; ++j)
+            mValue[i][j]=0XFF;/*white:user 0, black:computer 1*/
+    mCurrentX = GRID_NUM/2; mCurrentY = GRID_NUM/2;
 
 	mMarginWidth = 20;
     mStartPosX = mMarginWidth;
     mStartPosY = mMarginWidth;
     mContentWidth = mHeight - 2*mMarginWidth;
-    mChessmanWidth = mContentWidth/(LINE_NUM-1);
+    mChessmanWidth = mContentWidth/(GRID_NUM-1);
+
+	CMoveGenerator *pMG;
+	CEvaluation *pEvel;
+	m_pSE = new CNegaScout();
+	pMG = new CMoveGenerator();
+	pEvel = new CEvaluation();
+	m_pSE->SetSearchDepth(3);
+	m_pSE->SetMoveGenerator(pMG);
+	m_pSE->SetEveluator(pEvel);
 }
 void GobangWindow::OnClickBegin(void)
 {
-    for(int i = 0; i < LINE_NUM; ++i)
-        for(int j = 0; j < LINE_NUM; ++j)
-            mValue[i][j]=0;/*mWorthToComputer 1, mWorthToPlayer 2*/
+    for(int i = 0; i < GRID_NUM; ++i)
+        for(int j = 0; j < GRID_NUM; ++j)
+            mValue[i][j]=0xFF;
 	mStarted = true;
 	mpButton->setText("Rebegin");
 	repaint();
@@ -53,10 +64,10 @@ void GobangWindow::mouseDoubleClickEvent(QMouseEvent *event)
     {
         int x, y;
         _GetChessmanPos(event->x(), event->y(), &x, &y);
-		if(mValue[x][y] == 0)
+		if(mValue[x][y] == 0xff)
 		{
-			mValue[x][y] = 2;
-			if(_IsGameEnded(x, y, 2))
+			mValue[x][y] = WHITE;
+			if(_IsGameEnded(x, y, WHITE))
 			{
 				QMessageBox::about(NULL, "Game End", "Congratulations, you won the game ^_^");
 				mStarted = false;
@@ -65,17 +76,36 @@ void GobangWindow::mouseDoubleClickEvent(QMouseEvent *event)
 			{
 				int bestX, bestY;
 				_GetBestPos(&bestX, &bestY);
-				mValue[bestX][bestY] = 1;
-				mCurrentX = bestX;
-				mCurrentY = bestY;
-				if(_IsGameEnded(bestX, bestY, 1))
+				mValue[bestX][bestY] = BLACK;
+				if(_IsGameEnded(bestX, bestY, BLACK))
 				{
 					repaint();
 					QMessageBox::about(NULL, "Game End", "Sorry, you losed -_-");
 					mStarted = false;
 				}
-			}
-			
+				else
+				{
+					mValue[bestX][bestY] = WHITE;
+					if(_IsGameEnded(bestX, bestY, WHITE))
+					{
+						mValue[bestX][bestY] = BLACK;
+					}
+					else
+					{
+						mValue[bestX][bestY] = NOSTONE;
+						m_pSE->SearchAGoodMove(mValue, BLACK, bestX, bestY);
+						mValue[bestX][bestY] = BLACK;
+						if(_IsGameEnded(bestX, bestY, BLACK))
+						{
+							repaint();
+							QMessageBox::about(NULL, "Game End", "Sorry, you losed -_-");
+							mStarted = false;
+						}
+					}
+				}
+				mCurrentX = bestX;
+				mCurrentY = bestY;				
+			}			
 		}
     }
     QWidget::mouseDoubleClickEvent(event);
@@ -93,33 +123,33 @@ void GobangWindow::paintEvent(QPaintEvent *event)
     painter.drawRect(mStartPosX, mStartPosY, mContentWidth, mContentWidth);
     x = mStartPosX;
     y = mStartPosY;
-    for(int i=1; i < LINE_NUM -1; ++i)
+    for(int i=1; i < GRID_NUM -1; ++i)
     {
         y += mChessmanWidth;
         painter.drawLine(x, y, x + mContentWidth, y);
     }
     x = mStartPosX;
     y = mStartPosY;
-    for(int i=1; i< LINE_NUM -1; ++i)
+    for(int i=1; i< GRID_NUM -1; ++i)
     {
         x += mChessmanWidth;
         painter.drawLine(x, y, x, y + mContentWidth);
     }
-    for(int i=0; i<LINE_NUM; ++i)
+    for(int i=0; i<GRID_NUM; ++i)
     {
-        for(int j=0; j<LINE_NUM; ++j)
+        for(int j=0; j<GRID_NUM; ++j)
         {
-            if(mValue[i][j] == 1)
-            {
-                painter.drawImage(QRect(mStartPosX + (i-0.5)*mChessmanWidth,
-                                        mStartPosY + (j-0.5)*mChessmanWidth,
-                                        mChessmanWidth, mChessmanWidth), mBlackImage);
-            }
-            else if(mValue[i][j] == 2)
+            if(mValue[i][j] == WHITE)
             {
                 painter.drawImage(QRect(mStartPosX + (i-0.5)*mChessmanWidth,
                                         mStartPosY + (j-0.5)*mChessmanWidth,
                                         mChessmanWidth, mChessmanWidth), mWhiteImage);
+            }
+            else if(mValue[i][j] == BLACK)
+            {
+                painter.drawImage(QRect(mStartPosX + (i-0.5)*mChessmanWidth,
+                                        mStartPosY + (j-0.5)*mChessmanWidth,
+                                        mChessmanWidth, mChessmanWidth), mBlackImage);
             }
         }
     }
@@ -580,17 +610,17 @@ void GobangWindow::_GetBestPos(int *layer, int *colum)
 	for(i = 0; i < 15; i++)
 		for(j = 0; j < 15; j++)
 		{
-			if(mValue[i][j] == 0)
+			if(mValue[i][j] == 0xff)
 			{
+				_EstimateTranverse(i, j, 0);
+				_EstimateErect(i, j, 0);
+				_Estimate45(i, j, 0);
+				_Estimate_45(i, j, 0);
+				
 				_EstimateTranverse(i, j, 1);
 				_EstimateErect(i, j, 1);
 				_Estimate45(i, j, 1);
 				_Estimate_45(i, j, 1);
-				
-				_EstimateTranverse(i, j, 2);
-				_EstimateErect(i, j, 2);
-				_Estimate45(i, j, 2);
-				_Estimate_45(i, j, 2);
 			}
 		}
 		
@@ -603,10 +633,12 @@ void GobangWindow::_GetBestPos(int *layer, int *colum)
 			
 	for(i=0; i<15; i++)
 		for(j=0; j<15; j++)
-			if(mValue[i][j] == 0 && max < mWorth[i][j])
+		{
+			if(mValue[i][j] == 0xff && max < mWorth[i][j])
 			{
 				max = mWorth[i][j];
 				*layer = i;
 				*colum = j;
 			}
+		}
 }
