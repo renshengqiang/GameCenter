@@ -16,13 +16,13 @@ CSearchEngine::~CSearchEngine()
 
 BYTE CSearchEngine::MakeMove(STONEMOVE* move, int type)
 {
-	CurPosition[move->StonePos.y][move->StonePos.x] = type;
+	CurPosition[move->StonePos.x][move->StonePos.y] = type;
 	return 0;
 }
 
 void CSearchEngine::UnMakeMove(STONEMOVE* move)
 {
-	CurPosition[move->StonePos.y][move->StonePos.x] = NOSTONE;
+	CurPosition[move->StonePos.x][move->StonePos.y] = NOSTONE;
 }
 
 

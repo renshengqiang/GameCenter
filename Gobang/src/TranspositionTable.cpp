@@ -67,17 +67,17 @@ void CTranspositionTable::CalculateInitHashKey(BYTE CurPosition[GRID_NUM][GRID_N
 void CTranspositionTable::Hash_MakeMove(STONEMOVE* move, BYTE CurPosition[GRID_NUM][GRID_NUM])
 {
 	int type;
-	type = CurPosition[move->StonePos.y][move->StonePos.x];
-	m_HashKey32 = m_HashKey32 ^ m_nHashKey32[type][move->StonePos.y][move->StonePos.x]; 
-	m_HashKey64 = m_HashKey64 ^ m_ulHashKey64[type][move->StonePos.y][move->StonePos.x]; 
+	type = CurPosition[move->StonePos.x][move->StonePos.y];
+	m_HashKey32 = m_HashKey32 ^ m_nHashKey32[type][move->StonePos.x][move->StonePos.y]; 
+	m_HashKey64 = m_HashKey64 ^ m_ulHashKey64[type][move->StonePos.x][move->StonePos.y]; 
 }
 
 void CTranspositionTable::Hash_UnMakeMove(STONEMOVE* move, BYTE CurPosition[GRID_NUM][GRID_NUM])
 {
 	int type;
-	type = CurPosition[move->StonePos.y][move->StonePos.x];
-	m_HashKey32 = m_HashKey32 ^ m_nHashKey32[type][move->StonePos.y][move->StonePos.x]; 
-	m_HashKey64 = m_HashKey64 ^ m_ulHashKey64[type][move->StonePos.y][move->StonePos.x]; 
+	type = CurPosition[move->StonePos.x][move->StonePos.y];
+	m_HashKey32 = m_HashKey32 ^ m_nHashKey32[type][move->StonePos.x][move->StonePos.y]; 
+	m_HashKey64 = m_HashKey64 ^ m_ulHashKey64[type][move->StonePos.x][move->StonePos.y]; 
 }
 
 int CTranspositionTable::LookUpHashTable(int alpha, int beta, int depth,int TableNo)

@@ -16,15 +16,14 @@ CNegaScout::~CNegaScout()
 }
 void CNegaScout::SearchAGoodMove(BYTE position[GRID_NUM][GRID_NUM], int Type, int &x, int &y)
 {
-	int Score;
 	memcpy(CurPosition, position, GRID_COUNT);
 	m_nMaxDepth = m_nSearchDepth;
 	CalculateInitHashKey(CurPosition);
 	ResetHistoryTable();
-	Score = NegaScout(m_nMaxDepth, -20000, 20000);
+	NegaScout(m_nMaxDepth, -20000, 20000);
 
-	x = m_cmBestMove.StonePos.y;
-	y = m_cmBestMove.StonePos.x;
+	x = m_cmBestMove.StonePos.x;
+	y = m_cmBestMove.StonePos.y;
 }
 int CNegaScout::NegaScout(int depth, int alpha, int beta)
 {

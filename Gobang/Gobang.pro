@@ -10,5 +10,5 @@ OBJECTS_DIR = obj
 DESTDIR = bin
 MOC_DIR = obj
 # Input
-HEADERS += src/Gobang.h src/Define.h src/Evaluation.h src/SearchEngine.h src/NegaMax.h src/HistoryHeuristic.h src/MoveGenerator.cpp src/Nega_Scout.h src/TranspositionTable.h 
-SOURCES += src/Gobang.cpp src/main.cpp src/Evaluation.cpp src/SearchEngine.cpp  src/NegaMax.cpp src/HistoryHeuristic.cpp src/MoveGenerator.cpp src/Nega_Scout.cpp src/TranspositionTable.cpp
+HEADERS += src/Gobang.h src/Define.h src/Evaluation.h src/SearchEngine.h src/NegaMax.h src/AlphaBeta.h src/HistoryHeuristic.h src/MoveGenerator.cpp src/Nega_Scout.h src/TranspositionTable.h 
+SOURCES += src/Gobang.cpp src/main.cpp src/Evaluation.cpp src/SearchEngine.cpp  src/NegaMax.cpp src/AlphaBeta.cpp src/HistoryHeuristic.cpp src/MoveGenerator.cpp src/Nega_Scout.cpp src/TranspositionTable.cpp

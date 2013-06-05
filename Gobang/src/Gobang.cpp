@@ -31,7 +31,8 @@ GobangWindow::GobangWindow(int x, int y):
 	CMoveGenerator *pMG;
 	CEvaluation *pEvel;
 	//m_pSE = new CNegaScout();
-	m_pSE = new NegaMaxEngine();
+	//m_pSE = new NegaMaxEngine();
+	m_pSE = new AlphaBetaEngine();	
 	pMG = new CMoveGenerator();
 	pEvel = new CEvaluation();
 	m_pSE->SetSearchDepth(2);

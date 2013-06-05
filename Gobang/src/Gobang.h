@@ -4,6 +4,7 @@
 #include "Define.h"
 #include "Nega_Scout.h"
 #include "NegaMax.h"
+#include "AlphaBeta.h"
 #include <QtGui>
 
 

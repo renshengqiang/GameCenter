@@ -26,7 +26,7 @@ int CMoveGenerator::CreatePossibleMove(BYTE position[GRID_NUM][GRID_NUM], int nP
 		{
 			if (position[i][j] == (BYTE)NOSTONE)
 			{
-				AddMove(j, i, nPly);
+				AddMove(i, j, nPly);
 			}
 		}
 
