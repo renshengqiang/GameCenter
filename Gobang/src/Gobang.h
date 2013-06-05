@@ -3,6 +3,7 @@
 
 #include "Define.h"
 #include "Nega_Scout.h"
+#include "NegaMax.h"
 #include <QtGui>
 
 
@@ -31,7 +32,7 @@ class GobangWindow : public QWidget{
 		void OnClickBegin(void);
 
     private:
-		bool mStarted;
+		bool mStarted, mDoubleClicked;
         int mWidth,mHeight;
         int mStartPosX, mStartPosY, mMarginWidth, mContentWidth, mChessmanWidth;
         int mCurrentX, mCurrentY;
@@ -39,7 +40,7 @@ class GobangWindow : public QWidget{
         BYTE mValue[GRID_NUM][GRID_NUM];
 	int mWorthToComputer[GRID_NUM][GRID_NUM][4],mWorthToPlayer[GRID_NUM][GRID_NUM][4],mWorth[GRID_NUM][GRID_NUM];
 	QPushButton	*mpButton;
-	CNegaScout *m_pSE;
+	CSearchEngine* m_pSE;
 };
 
 #endif

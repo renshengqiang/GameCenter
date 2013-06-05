@@ -5,7 +5,7 @@
 using namespace std;
 
 GobangWindow::GobangWindow(int x, int y):
-	mStarted(false),
+	mStarted(false),mDoubleClicked(false),
     mWidth(726),mHeight(544)
 {
     QWidget::setGeometry(x,y,mWidth,mHeight);
@@ -30,10 +30,11 @@ GobangWindow::GobangWindow(int x, int y):
 
 	CMoveGenerator *pMG;
 	CEvaluation *pEvel;
-	m_pSE = new CNegaScout();
+	//m_pSE = new CNegaScout();
+	m_pSE = new NegaMaxEngine();
 	pMG = new CMoveGenerator();
 	pEvel = new CEvaluation();
-	m_pSE->SetSearchDepth(3);
+	m_pSE->SetSearchDepth(2);
 	m_pSE->SetMoveGenerator(pMG);
 	m_pSE->SetEveluator(pEvel);
 }
@@ -48,15 +49,16 @@ void GobangWindow::OnClickBegin(void)
 }
 void GobangWindow::mousePressEvent(QMouseEvent *event)
 {
-    if(_IsInChequer(event->x(), event->y()))
-    {
-        int x, y;
-        _GetChessmanPos(event->x(), event->y(), &x, &y);
-        mCurrentX = x;
-        mCurrentY = y;
-    }
-    QWidget::mousePressEvent(event);
-    repaint();
+	if(_IsInChequer(event->x(), event->y()) && !mDoubleClicked)
+	{
+	    int x, y;
+	    _GetChessmanPos(event->x(), event->y(), &x, &y);
+	    mCurrentX = x;
+	    mCurrentY = y;
+	}
+	mDoubleClicked = false;
+	QWidget::mousePressEvent(event);
+	repaint();
 }
 void GobangWindow::mouseDoubleClickEvent(QMouseEvent *event)
 {
@@ -101,13 +103,14 @@ void GobangWindow::mouseDoubleClickEvent(QMouseEvent *event)
 							QMessageBox::about(NULL, "Game End", "Sorry, you losed -_-");
 							mStarted = false;
 						}
-					}
-				}
-				mCurrentX = bestX;
-				mCurrentY = bestY;				
-			}			
+					}//else
+				}//else
+	            		mCurrentX = bestX;
+	            		mCurrentY = bestY;		
+			}//else
 		}
     }
+	mDoubleClicked = true;
     QWidget::mouseDoubleClickEvent(event);
     repaint();
 }

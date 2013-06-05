@@ -30,6 +30,6 @@ int CMoveGenerator::CreatePossibleMove(BYTE position[GRID_NUM][GRID_NUM], int nP
 			}
 		}
 
-	CHistoryHeuristic::MergeSort(m_MoveList[nPly], m_nMoveCount, 0);
+	CHistoryHeuristic::MergeSort(m_MoveList[nPly], m_nMoveCount, nSide);
 	return m_nMoveCount;
 }
