@@ -35,7 +35,7 @@ GobangWindow::GobangWindow(int x, int y):
 	m_pSE = new AlphaBetaEngine();	
 	pMG = new CMoveGenerator();
 	pEvel = new CEvaluation();
-	m_pSE->SetSearchDepth(2);
+	m_pSE->SetSearchDepth(3);
 	m_pSE->SetMoveGenerator(pMG);
 	m_pSE->SetEveluator(pEvel);
 }
